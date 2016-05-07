@@ -27,8 +27,16 @@ if($command eq 'start')
 	confess $usage
 		if !$name;
 
+	`mkdir -p rr`;	
+
 	$cmd =<<EOS;
-docker run -d --name $name hmlatapie/reproducible_research:latest /bin/bash -c "while true; do date; sleep 3600; done"
+docker pull hmlatapie/reproducible_research
+EOS
+
+	execute($cmd);
+
+	$cmd =<<EOS;
+docker run -d --name $name --volume=\$(pwd)/rr:/root/rr hmlatapie/reproducible_research /bin/bash -c "while true; do date; sleep 3600; done"
 EOS
 	execute($cmd);
 }
