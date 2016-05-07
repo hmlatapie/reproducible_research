@@ -14,5 +14,7 @@ RUN apt-get install -y git
 RUN git clone https://github.com/IDSIA/sacred.git && cd sacred && python setup.py install
 
 VOLUME /root/rr
-WORKDIR /root/images
+WORKDIR /root/rr
+
+CMD /bin/bash
 
