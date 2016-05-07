@@ -16,3 +16,5 @@ RUN git clone https://github.com/IDSIA/sacred.git && cd sacred && python setup.p
 VOLUME /root/rr
 WORKDIR /root/images
 
+CMD /bin/bash
+
