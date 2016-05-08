@@ -40,7 +40,7 @@ EOS
 	execute("docker run -d --name $mongodb -e AUTH=no tutum/mongodb");
 
 	$cmd =<<EOS;
-docker run -d --name $name --link $mongodb --volume=\$(pwd)/rr:/root/rr hmlatapie/reproducible_research /bin/bash -c "while true; do date; sleep 3600; done"
+docker run -d --name $name --link $mongodb:mongodb --volume=\$(pwd)/rr:/root/rr hmlatapie/reproducible_research /bin/bash -c "while true; do date; sleep 3600; done"
 EOS
 	execute($cmd);
 }
