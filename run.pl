@@ -4,6 +4,9 @@ use Time::HiRes qw(time sleep);
 use Getopt::Long;
 
 $options{defaultdb} = 'sacred_experiments';
+$options{RR_CONTAINER} = 'hmlatapie/reproducible_research';
+$options{RR_CONTAINER} = $ENV{RR_CONTAINER}
+	if $ENV{RR_CONTAINER};
 
 $usage = <<EOS;
 $0 cmd options
@@ -13,6 +16,8 @@ $0 cmd options
 	options:
 		--defaultdb=
 			defaults to $options{defaultdb}
+		--RR_CONTAINER
+			defaults to $options{RR_CONTAINER}
 EOS
 
 GetOptions(
@@ -36,7 +41,7 @@ if($command eq 'start')
 	`mkdir -p rr`;	
 
 	$cmd =<<EOS;
-docker pull hmlatapie/reproducible_research
+docker pull $options{RR_CONTAINER} 
 EOS
 
 	execute($cmd);
@@ -44,7 +49,7 @@ EOS
 	execute("docker run -d --name $mongodb -e AUTH=no hmlatapie/mongodb");
 
 	$cmd =<<EOS;
-docker run -d --name $name --link $mongodb:mongodb --volume=\$(pwd)/rr:/root/rr hmlatapie/reproducible_research /bin/bash -c "while true; do date; sleep 3600; done"
+docker run -d --name $name --link $mongodb:mongodb --volume=\$(pwd)/rr:/root/rr $options{RR_CONTAINER} /bin/bash -c "while true; do date; sleep 3600; done"
 EOS
 	execute($cmd);
 }
