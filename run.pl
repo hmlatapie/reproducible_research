@@ -12,6 +12,8 @@ $usage = <<EOS;
 $0 cmd options
 	valid commands:
 		start name 
+			--pull
+				will pull latest
 		test name 
 	options:
 		--defaultdb=
@@ -22,7 +24,9 @@ EOS
 
 GetOptions(
 	'stringparam=s' => \$options{stringparam},
-	'booleanparam' => \$options{booleanparam}
+	'RR_CONTAINER=s' => \$options{RR_CONTAINER},
+	'booleanparam' => \$options{booleanparam},
+	'pull' => \$options{pull},
 	);
 
 confess $usage
@@ -45,7 +49,12 @@ docker pull $options{RR_CONTAINER}
 EOS
 
 	execute($cmd);
-	execute('docker pull hmlatapie/mongodb');
+	execute('docker pull hmlatapie/mongodb')
+		if $options{pull};
+
+	execute('docker pull $options{RR_CONTAINER}')
+		if $options{pull};
+
 	execute("docker run -d --name $mongodb -e AUTH=no hmlatapie/mongodb");
 
 	$cmd =<<EOS;
@@ -80,6 +89,8 @@ else
 sub execute
 {
 	my ($cmd) = @_;
+	
+	print "executing command: $cmd\n";
 	open my $f, "$cmd |";
 	print
 		while <$f>;
